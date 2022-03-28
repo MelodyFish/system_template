@@ -1,0 +1,14 @@
+.table-container {
+  width: 95%;
+  margin: 0 auto;
+}
+.table-container .table-toolbar {
+  height: 80px;
+  line-height: 80px;
+}
+.table-container .table-toolbar .toolbar-input {
+  margin: 0 120px 0 40px;
+}
+.table-container .table-toolbar .toolbar-operate {
+  margin-left: 350px;
+}

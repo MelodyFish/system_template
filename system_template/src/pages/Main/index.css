@@ -1,0 +1,7 @@
+.main {
+  width: calc(100vw - 310px);
+  height: calc(100vh - 70px);
+  margin: 0 15px;
+  background-color: #fff;
+  float: left;
+}
