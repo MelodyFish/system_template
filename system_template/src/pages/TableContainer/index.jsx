@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react'
 import { Outlet } from 'react-router-dom'
-import { Table, Tag, Space, Popconfirm, Input, Select, Button, message, Modal, Form } from 'antd';
+import { Table, Tag, Space, Popconfirm, Input, Select, Button, message, Modal, Form, DatePicker } from 'antd';
 import {  tableData1, options } from '../../mock/table'
 import './index.css'
 
 const { Option } = Select;
+let selectedRow
+const temporaryStore = {}
 export default function Home() {
   const columns =  [
     {
@@ -101,8 +103,13 @@ export default function Home() {
   const [selectedType, setSelectedType] = useState('')
   const [isModalVisible, setIsModalVisible] = useState(false)
   const [tableData, setTableData] = useState(tableData1)
+  // const [selectedRow, setSelectedRow] = useState([])
 
+  useEffect(()=> {
+    console.log(11111);
+  },[tableData])
   const search = (e) => {
+    // 输入完回车时
     if(e.which === 13)
     setTableData(tableData.filter(item => item.name.indexOf(searchValue)!==-1))
     if(!searchValue) {
@@ -133,10 +140,30 @@ export default function Home() {
   }
   const handleEdit = (record) => {
     console.log(record)
+    selectedRow = record
+    temporaryStore.id = selectedRow.id
+    temporaryStore.name = selectedRow.name
+    temporaryStore.borrower = selectedRow.borrower
+    temporaryStore.tel = selectedRow.tel
+    temporaryStore.date = selectedRow.date
+    temporaryStore.tags = selectedRow.tags
     setIsModalVisible(true)
   }
+  const selectTag = (tag) => {
+    console.log(tag);
+  }
   const handleOk = () => {
-
+    console.log('选中的行---', selectedRow);
+    tableData.map( row => {
+      if(row.id === selectedRow.id) {
+        row.borrower = temporaryStore.borrower
+      }
+    })
+    console.log(tableData)
+    setTableData(tableData)
+    
+    message.info('修改成功')
+    setIsModalVisible(false)
   }
   const handleCancel = () => {
     setIsModalVisible(false)
@@ -169,7 +196,13 @@ export default function Home() {
           <Button type='primary'>新建</Button>
         </Space>
       </div>
-      <Modal title="Basic Modal" visible={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
+      <Table columns={columns} dataSource={tableData} rowKey={rowKey=>rowKey.id} bordered />
+      <Modal title='操作' cancelText='取消' okText='确认' 
+        visible={isModalVisible}
+        onOk={handleOk}
+        onCancel={handleCancel}
+        destroyOnClose={true}
+      >
         <Form
           name="basic"
           labelCol={{
@@ -179,7 +212,12 @@ export default function Home() {
             span: 16,
           }}
           initialValues={{
-            id: 'Token' + parseInt(Math.random() * 1000 + 10)
+            id: selectedRow ? selectedRow.id : '',
+            name: selectedRow ? selectedRow.name : '',
+            borrower: selectedRow ? selectedRow.borrower : '',
+            tel: selectedRow ? selectedRow.tel : '',
+            date: selectedRow ? selectedRow.date : '',
+            tags: selectedRow ? selectedRow.tags : [],
           }}
           autoComplete="off"
         >
@@ -193,36 +231,46 @@ export default function Home() {
             label="名称："
             name="name"
           >
-            <Input />
+            <Input onChange={e => temporaryStore.name = e.target.value} />
           </Form.Item>
           <Form.Item
             label="借阅者："
             name="borrower"
           >
-            <Input />
+            <Input onChange={e => temporaryStore.borrower = e.target.value} />
           </Form.Item>
           <Form.Item
             label="联系方式"
             name="tel"
+            rules={[
+              {required: true, message: '请输入正确的手机号'}
+            ]}
           >
-            <Input />
+            <Input onChange={e => temporaryStore.tel = e.target.value} />
           </Form.Item>
           <Form.Item
             label="借阅时间"
             name="date"
           >
-            <Input />
+            <Input onChange={e => temporaryStore.date = e.target.value} />
+            {/* <DatePicker style={{width: '100%'}} onChange={(date, dateString) => console.log(dateString)} /> */}
           </Form.Item>
           <Form.Item
             label="标签"
             name="tags"
           >
-            <Input />
+            <Select mode="multiple" style={{width: '100%'}} placeholder="请添加标签" onChange={(tag) => temporaryStore.tags = tag}>
+              {options.map(type => {
+                return (
+                  <Option value={type.value} key={type.id} >
+                    {type.value}
+                  </Option>
+                )
+              })}
+            </Select>
           </Form.Item>
-
         </Form>
       </Modal>
-      <Table columns={columns} dataSource={tableData} rowKey={rowKey=>rowKey.id} bordered />
     </div>
   )
 }
