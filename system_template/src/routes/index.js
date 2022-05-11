@@ -1,11 +1,11 @@
-import Home from '../pages/TableContainer'
+import Home from '../pages/TableContainer/baseTable'
 import News from '../pages/TableContainer/News'
 import Status from '../pages/ListContainer'
 import Rank from '../pages/DetailContainer'
 import Profile from '../pages/SettingContainer'
+import Login from '../pages/Login'
 import { MailOutlined, AppstoreOutlined, SettingOutlined } from '@ant-design/icons';
 export const routes =  [
-  
   {
     path: '/',
     element: <Home />
@@ -73,4 +73,9 @@ export const routes =  [
     }
   ]
   },
+  {
+    path: '/login',
+    key: '5',
+    element: <Login />
+  }
 ]

@@ -46,7 +46,7 @@ export default function Header() {
             </Link>
           </li>
           <li>
-            <Link to='/form/status' >
+            <Link to='/login' >
               &nbsp;&nbsp;&nbsp;
               <LogoutOutlined/>
               &nbsp;&nbsp;&nbsp;
